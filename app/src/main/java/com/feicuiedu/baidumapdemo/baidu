@@ -8,7 +8,7 @@
     SHA1获取：
     1. 通过我们自己的签名文件 + 包名  = key
 
-    keytool -list -v -keystore debug.keystore
+        keytool -list -v -keystore debug.keystore
 
         SHA1  = 4B:D7:DD:D9:2A:9D:B9:1D:27:7F:4E:2A:15:09:A9:AB:E7:A7:F6:D1
     2. 通过固定的签名文件 + 包名 = key
@@ -18,6 +18,20 @@
        keytool -list -v -keystore debug.keystore
 
        SHA1 = 5D:87:28:93:2C:DC:12:D0:7C:E2:C1:EF:14:CE:A3:77:E5:CB:9A:0A
+
+2. 地图的基本操作
+    1. 地图类型：普通视图、卫星视图、空白视图
+        if (mBaiduMap.getMapType()==BaiduMap.MAP_TYPE_SATELLITE){
+                            mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+                            return;
+                        }
+                        mBaiduMap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);
+    2. 地图的状态：知道，后面代码创建MapView的时候使用
+        但是地图状态的监听是可以实现的。
+        MapStatus.target  经纬度
+
+3. 地图定位
+   1. 开启定位图层操作
 
 
 
