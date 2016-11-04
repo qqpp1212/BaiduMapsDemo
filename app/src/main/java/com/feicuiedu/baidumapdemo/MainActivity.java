@@ -15,10 +15,12 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 为地图设置状态监听
         mBaiduMap.setOnMapStatusChangeListener(mapStatusListener);
+
+        mBaiduMap.setOnMarkerClickListener(MarkerListener);
 
         initView();
     }
@@ -231,8 +235,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private BitmapDescriptor dot = BitmapDescriptorFactory.fromResource(R.drawable.treasure_dot);
+    private BitmapDescriptor dot_click = BitmapDescriptorFactory.fromResource(R.drawable.treasure_expanded);
 
-
+    // 添加Marker
     private void addMarker(LatLng latLng){
         /**
          * 在某一位置，添加标注物
@@ -249,6 +254,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 添加标注物
         mBaiduMap.addOverlay(options);
-
     }
+
+    private BaiduMap.OnMarkerClickListener MarkerListener = new BaiduMap.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            /**
+             * marker点击的时候会触发这个方法
+             * 展示一个信息窗口：文本、图片、。。。。
+             *
+             * 1. 目的：点击之后，展示出一个InfoWindow
+             * 2. 实现：1. 创建一个Infowindow
+             *          2. 设置你展示的是什么？
+             *          3. 还是在地图上展示出来
+             *
+             */
+            InfoWindow infoWindow = new InfoWindow(dot_click, marker.getPosition(), 0, new InfoWindow.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick() {
+
+                }
+            });
+            mBaiduMap.showInfoWindow(infoWindow);
+
+            return false;
+        }
+    };
 }
