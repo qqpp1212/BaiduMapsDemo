@@ -14,8 +14,11 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.model.LatLng;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BaiduMap mBaiduMap;
     private RelativeLayout mainLayout;
     private LocationClient locationClient;
+    private LatLng mMyLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          * 3.卫星视图和普通视图的切换
          * 4. 其他操作
          */
-        mMapView = (MapView) findViewById(R.id.mapview);
 
 
         // 地图状态
@@ -55,7 +58,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 目前来说，设置只能通过MapView的构造方法来添加,所以Demo里面是在布局中添加MapView
         // 后面项目实施会动态创建
-//        mMapView = new MapView(this,options);
+
+        // 动态创建一个MapView
+        mMapView = new MapView(this,options);
+        // 将MapView添加到布局上
+        mainLayout.addView(mMapView,0);
 
         mBaiduMap = mMapView.getMap();
 
@@ -117,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                  * 5. 开启定位
                  *
                  * 注意：不要使用模拟器，真机，6.0 以上需要添加运行时权限的
-                 *      定位不准确：默认展示gcj02方式，位置有偏差，我们定位的时候设置
+                 *      定位不准确：默认展示gcj02方式，位置有偏差，我们定位的时候设置bd09ll
                  */
 
                 // 打开定位
@@ -134,6 +141,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 option.setCoorType("bd09ll");// 设置坐标类型，默认gcj02
                 option.setIsNeedAddress(true);// 默认不需要
                 option.setScanSpan(5000);// 设置扫描周期
+
+                // 添加配置的信息
+                locationClient.setLocOption(option);
 
                 // 设置监听
                 locationClient.registerLocationListener(locationListener);
@@ -165,8 +175,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             double lng = bdLocation.getLongitude();// 获取经度
             double lat = bdLocation.getLatitude();// 获取纬度
 
-            Toast.makeText(MainActivity.this, "经度："+lng+"纬度："+lat, Toast.LENGTH_SHORT).show();
+            /**
+             * 定位到之后弹吐司改变成添加定位的标志，移动到我们的位置
+             */
+//            Toast.makeText(MainActivity.this, "经度："+lng+"纬度："+lat, Toast.LENGTH_SHORT).show();
+
+            /**
+             * 添加定位的标志
+             *
+             * 1. 拿到定位的信息
+             * 2. 给地图设置上定位信息
+             */
+
+            MyLocationData myLocationData = new MyLocationData.Builder()
+                    .latitude(lat)// 纬度
+                    .longitude(lng)// 经度
+                    .accuracy(100f)// 定位的精度的大小
+                    .build();
+            mBaiduMap.setMyLocationData(myLocationData);
+
+            /**
+             * 移动到我们的位置
+             *
+             * 1. 有我们定位的位置
+             * 2. 移动的话，地图状态是不是发生变化了呢？要移动到定位的位置上去
+             * 3. 地图状态的位置设置我们的位置
+             * 4. 地图的状态变化了？我们需要对地图的状态进行更新
+             */
+
+            // 我们定位的位置
+            mMyLocation = new LatLng(lat,lng);
+
+            moveToMyLocation();
 
         }
     };
+
+    // 移动到我们定位的位置去
+    private void moveToMyLocation() {
+        // 主要是为将地图的位置设置成我们当前的位置
+        MapStatus mapStatus = new MapStatus.Builder()
+                .target(mMyLocation)
+                .rotate(0)// 作用是摆正地图
+                .zoom(20)
+                .build();
+
+        // 更新地图的状态
+        MapStatusUpdate update = MapStatusUpdateFactory.newMapStatus(mapStatus);
+        mBaiduMap.animateMapStatus(update);
+    }
 }
