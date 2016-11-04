@@ -13,10 +13,13 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 
@@ -94,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onMapStatusChangeFinish(MapStatus mapStatus) {
 
-            Toast.makeText(MainActivity.this, "状态变化：纬度：" + mapStatus.target.latitude + "经度：" + mapStatus.target.longitude, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MainActivity.this, "状态变化：纬度：" + mapStatus.target.latitude + "经度：" + mapStatus.target.longitude, Toast.LENGTH_SHORT).show();
 
         }
     };
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 option.setOpenGps(true);// 打开GPS
                 option.setCoorType("bd09ll");// 设置坐标类型，默认gcj02
                 option.setIsNeedAddress(true);// 默认不需要
-                option.setScanSpan(5000);// 设置扫描周期
+//                option.setScanSpan(5000);// 设置扫描周期
 
                 // 添加配置的信息
                 locationClient.setLocOption(option);
@@ -208,6 +211,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             moveToMyLocation();
 
+            addMarker(new LatLng(lat+0.1,lng+0.1));
+
         }
     };
 
@@ -217,11 +222,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MapStatus mapStatus = new MapStatus.Builder()
                 .target(mMyLocation)
                 .rotate(0)// 作用是摆正地图
-                .zoom(20)
+                .zoom(19)
                 .build();
 
         // 更新地图的状态
         MapStatusUpdate update = MapStatusUpdateFactory.newMapStatus(mapStatus);
         mBaiduMap.animateMapStatus(update);
+    }
+
+    private BitmapDescriptor dot = BitmapDescriptorFactory.fromResource(R.drawable.treasure_dot);
+
+
+    private void addMarker(LatLng latLng){
+        /**
+         * 在某一位置，添加标注物
+         * 1. 目的：地图上添加一个标志
+         * 2. 实现步骤：主要的两个方面
+         *      1. 确定你要添加标注物的位置：经纬度
+         *      2. 确定你要添加的图标
+         *
+         */
+        // MarkerOptions是抽象类OverlayOptions的子类
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+        options.icon(dot);
+
+        // 添加标注物
+        mBaiduMap.addOverlay(options);
+
     }
 }
