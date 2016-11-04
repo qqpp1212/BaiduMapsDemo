@@ -20,7 +20,7 @@ android {
         }
     }
 
-    // 参考Demo 里面的目录结构添加依赖，这种方式需要指定so动态库的路径
+    // 参考Demo 里面的目录结构添加依赖，这种方式需要指定so动态库的
     sourceSets {
         main {
             jniLibs.srcDir 'libs'

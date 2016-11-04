@@ -5,19 +5,18 @@
     4. 初始化，Application里面：不要忘记在清单文件里面添加创建的Application
 
     2：申请key：百度地图官网上，使用debug.keyStore签名文件获取SHA1值和包名
-    SHA1获取：
-    1. 通过我们自己的签名文件 + 包名  = key
+        SHA1获取：
+        1. 通过我们自己的签名文件 + 包名  = key
 
-        keytool -list -v -keystore debug.keystore
+            keytool -list -v -keystore debug.keystore
+            SHA1  = 4B:D7:DD:D9:2A:9D:B9:1D:27:7F:4E:2A:15:09:A9:AB:E7:A7:F6:D1
 
-        SHA1  = 4B:D7:DD:D9:2A:9D:B9:1D:27:7F:4E:2A:15:09:A9:AB:E7:A7:F6:D1
-    2. 通过固定的签名文件 + 包名 = key
-       如果拿固定的放到app下面，是需要在build.gradle里面去
-       指定我们使用的是app下面得到固定的签名文件，而不是电脑上的
+        2. 通过固定的签名文件 + 包名 = key
+           如果拿固定的放到app下面，是需要在build.gradle里面去
+           指定我们使用的是app下面得到固定的签名文件，而不是电脑上的
 
-       keytool -list -v -keystore debug.keystore
-
-       SHA1 = 5D:87:28:93:2C:DC:12:D0:7C:E2:C1:EF:14:CE:A3:77:E5:CB:9A:0A
+           keytool -list -v -keystore debug.keystore
+           SHA1 = 5D:87:28:93:2C:DC:12:D0:7C:E2:C1:EF:14:CE:A3:77:E5:CB:9A:0A
 
 2. 地图的基本操作
     1. 地图类型：普通视图、卫星视图、空白视图
@@ -31,7 +30,7 @@
         MapStatus.target  经纬度
 
 3. 地图定位
-   1. 开启定位图层操作
+
 
 
 
